@@ -25,6 +25,8 @@ public class Multicast extends Thread{
     public static ArrayList<String> Nombres_nodos;
     public static ArrayList<String> Mis_Archivos;
     
+    public static String Archivo_Seleccionado, Nodos_Contenedores;
+    
     private byte[] reciData;
     
     private DatagramPacket reciPacket;
@@ -102,7 +104,7 @@ public class Multicast extends Thread{
                                    String resultado = Archivos_Por_nodo.get(j);
                                    String resultado2 = Nombres_nodos.get(j);
                                    Nombres_nodos.set(j,resultado2+" "+split[1]);
-                                   Archivos_Por_nodo.set(j, resultado+"-"+reciPacket.getAddress().toString()); 
+                                   Archivos_Por_nodo.set(j, resultado+"&"+reciPacket.getAddress().toString()); 
                                    }
                                }
                                break;
@@ -112,7 +114,7 @@ public class Multicast extends Thread{
                            if(Parametros.Nombre_computador.compareTo(split[1])!=0){
                            Archivos_Publicos.add(split[i]);
                            Nombres_nodos.add(split[1]+" ");
-                           Archivos_Por_nodo.add(reciPacket.getAddress().toString()+"-");
+                           Archivos_Por_nodo.add(reciPacket.getAddress().toString());
                            }
                        }        
                     }

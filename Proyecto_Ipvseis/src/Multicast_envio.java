@@ -81,12 +81,7 @@ public class Multicast_envio extends Thread{
         
         while(true){
             try {
-                if(Enviar_lista_archivos()){
-                    System.out.println("Envio lista a los nodos correctamente");
-                }else{
-                    System.out.println("Hubo un error al enviar lista a los nodos");
-                }
-                
+                Enviar_lista_archivos();
             } catch (IOException ex) {
                 Logger.getLogger(Multicast_envio.class.getName()).log(Level.SEVERE, null, ex);
             }
