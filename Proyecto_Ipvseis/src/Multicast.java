@@ -1,6 +1,7 @@
 
 import java.io.IOException;
 import java.net.DatagramPacket;
+import java.net.Inet6Address;
 import java.net.InetAddress;
 import java.net.MulticastSocket;
 import java.net.UnknownHostException;
@@ -59,8 +60,11 @@ public class Multicast extends Thread{
     @Override
     public void run() {
         super.run(); //To change body of generated methods, choose Tools | Templates.
-        
-        System.out.println("Creado hilo para ejecucion de multicast");
+        try {
+            System.out.println("Creado hilo para ejecucion de multicast "+ Inet6Address.getLocalHost().getAddress());
+        } catch (UnknownHostException ex) {
+            Logger.getLogger(Multicast.class.getName()).log(Level.SEVERE, null, ex);
+        }
         
         while(true){
             try {
@@ -73,11 +77,6 @@ public class Multicast extends Thread{
             
                 if(cadena.startsWith("Mul::Archivos")){
                       Recibiendo_Lista_Archivos(cadena);
-                }
-                else{
-                    if(cadena.startsWith("Mul::PeticionArchivo")){
-                    
-                    }
                 }
                
         }

@@ -205,6 +205,11 @@ public class Inicio extends javax.swing.JFrame {
         jScrollPane2.setViewportView(Lista_mis_archivos);
 
         jButton1.setText("Descargar");
+        jButton1.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jButton1MouseClicked(evt);
+            }
+        });
         jButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton1ActionPerformed(evt);
@@ -548,8 +553,7 @@ public class Inicio extends javax.swing.JFrame {
                 System.out.println(i+" "+split[i]);
 
                 int rand = (int) (Math.random()*(split.length-1));
-                System.out.println(rand);
-                System.out.println(Multicast.Archivo_Seleccionado+":"+split[rand]);
+                Multicast.Nodos_Contenedores = split[rand];
             }
         }
     }//GEN-LAST:event_Tabla_MulticastMouseClicked
@@ -557,6 +561,10 @@ public class Inicio extends javax.swing.JFrame {
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void jButton1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton1MouseClicked
+            Multicast_envio.Enviar_Peticion();
+    }//GEN-LAST:event_jButton1MouseClicked
 
     /**
      * @param args the command line arguments

@@ -73,7 +73,12 @@ public class Multicast_envio extends Thread{
         }
         
         return true;
-    } 
+    }
+    
+    public static void Enviar_Peticion(){
+    
+    
+    }
 
     @Override
     public void run() {
