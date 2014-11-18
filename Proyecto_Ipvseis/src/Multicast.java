@@ -1,16 +1,12 @@
 
-import java.awt.List;
 import java.io.IOException;
 import java.net.DatagramPacket;
-import java.net.Inet6Address;
 import java.net.InetAddress;
 import java.net.MulticastSocket;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
-import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.xml.crypto.KeySelector;
 
 /*
  * To change this template, choose Tools | Templates
@@ -24,10 +20,9 @@ import javax.xml.crypto.KeySelector;
 public class Multicast extends Thread{
     
     public static MulticastSocket multi;
-    public static String Grupo_Ip;
-    public static int Puerto_Multicast;
     public static ArrayList<String> Archivos_Publicos;
     public static ArrayList<String> Archivos_Por_nodo;
+    public static ArrayList<String> Nombres_nodos;
     public static ArrayList<String> Mis_Archivos;
     
     private byte[] reciData;
@@ -35,13 +30,10 @@ public class Multicast extends Thread{
     private DatagramPacket reciPacket;
 
     public Multicast() throws UnknownHostException {
-        
-        Puerto_Multicast = 9898;
-        Grupo_Ip = "ffeb:1814:5824:542::1"; 
-        
+                
         try {
-            multi = new MulticastSocket(Puerto_Multicast);
-            InetAddress Grupo = InetAddress.getByName(Grupo_Ip);
+            multi = new MulticastSocket(Parametros.Puerto_Multicast);
+            InetAddress Grupo = InetAddress.getByName(Parametros.Grupo_Ip);
             multi.joinGroup(Grupo);
         } catch (IOException ex) {
             Logger.getLogger(Multicast.class.getName()).log(Level.SEVERE, null, ex);
@@ -56,12 +48,10 @@ public class Multicast extends Thread{
         
         Archivos_Publicos = new ArrayList<String>();
         Archivos_Por_nodo = new ArrayList<String>();
-            
-    }
-    
-    public void Enviar_Archivo(){
+        Nombres_nodos = new ArrayList<String>();
         
-    
+        Limpiar_tabla Clear = new Limpiar_tabla();
+        Clear.start();
     }
 
     @Override
@@ -94,35 +84,43 @@ public class Multicast extends Thread{
     public void Recibiendo_Lista_Archivos(String cadena){
                     String zero[] = cadena.split("&&.");
                     String split[] = zero[0].split("-");
-                    for(int i = 1; i < split.length; i++){
+                    for(int i = 2; i < split.length; i++){
                        boolean Comprueba = true;
                        for(int j=0; j < Archivos_Publicos.size();j++){
                            if(split[i].compareTo(Archivos_Publicos.get(j))==0){
                                Comprueba = false;
-                               String split2[] = Archivos_Por_nodo.get(j).split("-");
+                               String split2[] = Nombres_nodos.get(j).split(" ");
                                boolean Comprueba2 = true;
                                for(int k=0; k<split2.length;k++){
-                                    if(reciPacket.getAddress().toString().compareTo(split2[k])==0){
+                                    if(split[1].compareTo(split2[k])==0){
                                         Comprueba2 = false;
                                         break;
                                     }
                                 }
                                if(Comprueba2){
+                                   if(split[1].compareTo(Parametros.Nombre_computador)!=0){
                                    String resultado = Archivos_Por_nodo.get(j);
-                                   Archivos_Por_nodo.set(j, resultado+" "+reciPacket.getAddress().toString()); 
+                                   String resultado2 = Nombres_nodos.get(j);
+                                   Nombres_nodos.set(j,resultado2+" "+split[1]);
+                                   Archivos_Por_nodo.set(j, resultado+"-"+reciPacket.getAddress().toString()); 
+                                   }
                                }
                                break;
                            }
                        }
                        if(Comprueba){
-                           
+                           if(Parametros.Nombre_computador.compareTo(split[1])!=0){
                            Archivos_Publicos.add(split[i]);
+                           Nombres_nodos.add(split[1]+" ");
                            Archivos_Por_nodo.add(reciPacket.getAddress().toString()+"-");
+                           }
                        }        
                     }
+                    
+                   
                    for(int i=0; i<Archivos_Publicos.size();i++){
                     Inicio.Tabla_Multicast.setValueAt(Archivos_Publicos.get(i), i, 0);
-                    Inicio.Tabla_Multicast.setValueAt(Archivos_Por_nodo.get(i), i, 1);
+                    Inicio.Tabla_Multicast.setValueAt(Nombres_nodos.get(i), i, 1);
                    }
     }
 

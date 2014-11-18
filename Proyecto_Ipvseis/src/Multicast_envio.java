@@ -56,7 +56,7 @@ public class Multicast_envio extends Thread{
     
     public boolean Enviar_lista_archivos() throws IOException{
         
-        String mensaje = "Mul::Archivos";
+        String mensaje = "Mul::Archivos-"+Parametros.Nombre_computador;
         
         mensaje += Leer_Archivos()+"&&.";
         
@@ -64,7 +64,7 @@ public class Multicast_envio extends Thread{
         buffer = mensaje.getBytes();
         
         try {
-            DatagramPacket packete = new DatagramPacket(buffer, 0, InetAddress.getByName(Multicast.Grupo_Ip),Multicast.Puerto_Multicast);
+            DatagramPacket packete = new DatagramPacket(buffer, 0, InetAddress.getByName(Parametros.Grupo_Ip),Parametros.Puerto_Multicast);
             packete.setData(buffer);
             Multicast.multi.send(packete);
         } catch (UnknownHostException ex) {
@@ -91,7 +91,7 @@ public class Multicast_envio extends Thread{
                 Logger.getLogger(Multicast_envio.class.getName()).log(Level.SEVERE, null, ex);
             }
             try {
-                sleep(5000);
+                sleep(2000);
             } catch (InterruptedException ex) {
                 Logger.getLogger(Multicast_envio.class.getName()).log(Level.SEVERE, null, ex);
             }
