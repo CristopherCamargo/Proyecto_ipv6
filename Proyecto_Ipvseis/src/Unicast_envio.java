@@ -23,7 +23,7 @@ public class Unicast_envio extends Thread  {
             DatagramSocket socket = new DatagramSocket();
             DatagramSocket socket_recibe = new DatagramSocket(20002);
             
-            //Enviando archivo que se quiere enviar
+            //Enviando archivo
             InetAddress address = InetAddress.getByName(ventana.unicastIP.getText());
             String archivo = ventana.archivosList.getSelectedValue().toString();
             File abre = new File("Privado/"+archivo);
@@ -45,24 +45,31 @@ public class Unicast_envio extends Thread  {
             if( "Acepto".equals(mensaje_recibido) ) {
                 FileInputStream f = new FileInputStream("Privado/"+archivo);
                
-                int velocidad = 20480;
+                int velocidad = 256;
                 byte[] buffer = new byte[velocidad];
                 int len;
                 int len_tem=0;
+                float porcentaje;
+                ventana.unicastProgress.setVisible(true);
                 while ((len = f.read(buffer)) > 0) {
-                    DatagramPacket paq = new DatagramPacket(buffer, buffer.length, address, 20001);
+                    DatagramPacket paq = new DatagramPacket(buffer, buffer.length, address,Integer.parseInt(ventana.unicastPuerto.getText()));
                     socket.send(paq);
                     len_tem +=velocidad;
-                    ventana.unicastProgress.setValue(len_tem/f.read(buffer)*100);
+                    porcentaje = (float) (len_tem*100/abre.length());
+                    ventana.unicastProgress.setValue((int)porcentaje);
                     System.out.println("Enviado "+len_tem);
-                    Thread.sleep(100);
+                    Thread.sleep(1000);
                 }
+                ventana.unicastProgress.setVisible(false);
+                ventana.unicastProgress.setValue(0);
                 System.out.println("¡Archivo enviado exitosamente!");
                 JOptionPane.showMessageDialog(null, "¡Archivo enviado exitosamente!");
-                
+                socket.close();
+                socket_recibe.close();
             }else{
                 JOptionPane.showMessageDialog(null, "¡Archivo cancelado!");
             }
+            
          } catch (Exception ex1) {
             System.out.println("Error: " +ex1);
          } 

@@ -48,31 +48,37 @@ public class Unicast extends Thread{
                     
                     int data_rec = 0;
                     int tamahno = Integer.parseInt(_val[1].trim());
-                    int velocidad = 20480;
+                    int velocidad = 256;
                     
                     FileOutputStream file_recibido = new FileOutputStream("Recibidos/"+_val[0]);
-                    while (data_rec < tamahno) {
+                    while (data_rec <= tamahno) {
 
                         System.out.println("leido: "+data_rec);
                         byte[] mensaje_bytes_archivo = new byte[velocidad];
                         DatagramPacket archivo = new DatagramPacket(mensaje_bytes_archivo,mensaje_bytes_archivo.length);
                         socket.receive(archivo);
-
+                        
                         data_rec +=velocidad;
                         file_recibido.write(mensaje_bytes_archivo, 0, mensaje_bytes_archivo.length);
-
+                        System.out.println(tamahno +"---"+data_rec);
                     }
 
                     System.out.println("Lectura finalizada corectamente");
                     JOptionPane.showMessageDialog(null, "Archivo recibido exitosamente...");
                     file_recibido.close();
-                    
+                }else{
+                    System.out.println("Archivo rechazado");
+                    String mensaje = "No Acepto";
+                    InetAddress address = InetAddress.getByName(paquete.getAddress().getHostAddress());
+                    DatagramPacket acepto = new DatagramPacket(mensaje.getBytes(), mensaje.getBytes().length,address, 20002 );
+                    socket.send(acepto);
                 }
             }
+            
         } catch (Exception ex) {
             System.out.println("error: "+ex);
         }
-    
+        
     }
     
     public void listarArchivosPrivados(){
